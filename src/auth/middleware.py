@@ -17,7 +17,7 @@ async def access_middleware(
     if access:
         try:
             payload = decode_jwt(access)
-            request.state.user = payload
+            request.state.payload = payload
             return await call_next(request)
         except ExpiredSignatureError:
             pass
@@ -25,7 +25,7 @@ async def access_middleware(
         try:
             async with async_session() as session:
                 new_access = await update_access_jwt(request, session)
-            request.state.user = decode_jwt(new_access)
+            request.state.payload = decode_jwt(new_access)
             request.state.new_access = new_access
         except ExpiredSignatureError:
             return Response(status_code=401, content="You are need to be logged in")
