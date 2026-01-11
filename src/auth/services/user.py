@@ -68,8 +68,9 @@ async def authenticate_user(username: str, password: str, session: SessionDep) -
         raise incorrect_credentials
 
 
-async def get_current_user(request: Request) -> UserInDB:
-    user = getattr(request.state, "user", None)
+async def get_current_user(request: Request, session: SessionDep) -> UserInDB:
+    payload = getattr(request.state, "payload", None)
+    user = await get_user_by_id(int(payload["sub"]), session)
     if not user:
         raise HTTPException(status_code=401)
-    return user
+    return UserInDB.model_validate(user, from_attributes=True)
