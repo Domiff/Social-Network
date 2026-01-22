@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Registration
+{% endblock title %}
+
+{% block body %}
+  <h1>Registration</h1>
+  <form action="registration" method="post" enctype="multipart/form-data">
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required>
+    <label for="password">Password:</label>
+    <input type="text" name="password" id="password" required>
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required>
+    <button type="submit">Register</button>
+  </form>
+{% endblock body %}
