@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, Request
+from fastapi import APIRouter, Request, Response
 
 from src.auth.config import settings
 from src.auth.dependencies import DataFormDep, OAuth2PasswordRequestFormDep
