@@ -70,7 +70,7 @@ async def authenticate_user(username: str, password: str, session: SessionDep) -
 
 async def get_current_user(request: Request, session: SessionDep) -> UserInDB:
     payload = getattr(request.state, "payload", None)
-    user = await get_user_by_id(int(payload["sub"]), session)
-    if not user:
+    if not payload:
         raise HTTPException(status_code=401)
+    user = await get_user_by_id(int(payload["sub"]), session)
     return UserInDB.model_validate(user, from_attributes=True)
