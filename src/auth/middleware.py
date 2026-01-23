@@ -30,7 +30,7 @@ async def access_middleware(
         except ExpiredSignatureError:
             return Response(status_code=401, content="You are need to be logged in")
     response = await call_next(request)
-    if hasattr(request.state, "new_access") and request.url.path != "/logout":
+    if hasattr(request.state, "new_access") and request.url.path != "/auth/logout":
         response.set_cookie(
             "access",
             request.state.new_access,
