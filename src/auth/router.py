@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Request, status
+from fastapi.responses import RedirectResponse, HTMLResponse
 
 from src.auth.config import settings
 from src.auth.dependencies import DataFormDep, OAuth2PasswordRequestFormDep
@@ -10,12 +11,13 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.get("/registration-page")
-async def registration_page(request: Request):
-    return templates.TemplateResponse("auth/registration.html", {"request": request})
+async def registration_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request=request, name="auth/registration.html")
 
 
 @router.post("/registration")
-async def registration(data: DataFormDep, session: SessionDep, response: Response):
+async def registration(data: DataFormDep, session: SessionDep) -> RedirectResponse:
+    response = RedirectResponse(url="/users/me", status_code=status.HTTP_303_SEE_OTHER)
     user = await create_user(data, session)
     tokens = create_tokens(user)
     response.set_cookie(
@@ -34,18 +36,19 @@ async def registration(data: DataFormDep, session: SessionDep, response: Respons
         # secure=True,
         samesite="strict",
     )
-    return {"detail": "Registered in successfully"}
+    return response
 
 
 @router.get("/login-page")
-async def login_page(request: Request):
-    return templates.TemplateResponse("auth/login.html", {"request": request})
+async def login_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request=request, name="auth/login.html")
 
 
 @router.post("/login")
 async def login(
-    session: SessionDep, form_data: OAuth2PasswordRequestFormDep, response: Response
-):
+    session: SessionDep, form_data: OAuth2PasswordRequestFormDep
+) -> RedirectResponse:
+    response = RedirectResponse(url="/users/me", status_code=status.HTTP_303_SEE_OTHER)
     tokens = await authenticate_user(form_data.username, form_data.password, session)
     response.set_cookie(
         key="access",
@@ -63,16 +66,17 @@ async def login(
         # secure=True,
         samesite="strict",
     )
-    return {"detail": "Logged in successfully"}
+    return response
 
 
 @router.get("/logout-page")
-async def logout_page(request: Request):
-    return templates.TemplateResponse("auth/logout.html", {"request": request})
+async def logout_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request=request, name="auth/logout.html")
 
 
 @router.post("/logout")
-async def logout(response: Response):
+async def logout() -> RedirectResponse:
+    response = RedirectResponse(url="/auth/login-page", status_code=status.HTTP_303_SEE_OTHER)
     response.delete_cookie(key="access")
     response.delete_cookie(key="refresh")
-    return {"detail": "Logged out successfully"}
+    return response
