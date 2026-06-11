@@ -1,0 +1,48 @@
+[project]
+name = "social-network"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.18.4",
+    "asyncpg>=0.31.0",
+    "fastapi[standard]>=0.136.3",
+    "pydantic-settings>=2.14.1",
+    "pyjwt>=2.13.0",
+    "sqlalchemy>=2.0.50",
+    "structlog>=26.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+    "ruff>=0.15.17",
+]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    "venv",
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "B",
+    "DJ",
+    "UP",
+]
+ignore = ["E501"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+combine-as-imports = true
