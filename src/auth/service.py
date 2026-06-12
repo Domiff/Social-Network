@@ -3,10 +3,11 @@ from typing import Annotated
 from fastapi import Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.exceptions import Forbidden
 from src.auth.jwt import JWT
 from src.auth.repository import UserRepository
 from src.auth.schemas import CredentialsSchema, TokenOut
-from src.auth.utils import get_password_hash
+from src.auth.utils import get_password_hash, verify_password
 from src.core.config import settings
 from src.core.database import SessionDep
 from src.core.logging import get_logger
@@ -53,6 +54,8 @@ class AuthService:
         self, credentials: CredentialsSchema, response: Response
     ) -> TokenOut:
         user = await self.repo.get_by_email(credentials.email)
+        if not verify_password(credentials.password, user.password):
+            raise Forbidden("Password mismatch")
         return self._authenticate(user.id, response)
 
     async def logout(self, response: Response) -> None:
