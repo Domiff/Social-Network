@@ -4,8 +4,8 @@ from fastapi import Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.exceptions import Forbidden
-from src.auth.jwt import JWT
-from src.auth.repository import UserRepository
+from src.auth.jwt import get_jwt
+from src.auth.repository import get_user_repo
 from src.auth.schemas import CredentialsSchema, TokenOut
 from src.auth.utils import get_password_hash, verify_password
 from src.core.config import settings
@@ -18,8 +18,8 @@ logger = get_logger(__name__)
 class AuthService:
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.repo = UserRepository(self.session)
-        self.jwt = JWT()
+        self.repo = get_user_repo(self.session)
+        self.jwt = get_jwt()
 
     def _set_refresh_cookie(self, token: str, response: Response) -> None:
         response.set_cookie(

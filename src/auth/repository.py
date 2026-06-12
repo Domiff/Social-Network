@@ -1,5 +1,6 @@
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.models import User
 from src.core.database import BaseRepository
@@ -64,3 +65,7 @@ class UserRepository(BaseRepository):
         except IntegrityError as e:
             logger.error("User does not exist")
             raise DoesNotExists() from e
+
+
+def get_user_repo(session: AsyncSession) -> UserRepository:
+    return UserRepository(session)

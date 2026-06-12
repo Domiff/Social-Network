@@ -65,3 +65,7 @@ class JWT:
         access_token = self._encode_token(payload["sub"], "access")
         refresh_token = self._encode_token(payload["sub"], "refresh")
         return PairTokens(access_token=access_token, refresh_token=refresh_token)
+
+
+def get_jwt() -> JWT:
+    return JWT()
