@@ -1,7 +1,9 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr
+
+from src.core.schemas import BaseSchema
 
 
-class CredentialsSchema(BaseModel):
+class CredentialsSchema(BaseSchema):
     username: str | None = None
     password: str
     email: EmailStr
