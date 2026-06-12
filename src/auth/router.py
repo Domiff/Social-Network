@@ -5,6 +5,7 @@ from src.auth.schemas import CredentialsSchema
 from src.auth.service import AuthServiceDep
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+refresh_token_schema = APIKeyCookie(name="refresh_token", auto_error=True)
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -28,6 +29,6 @@ async def logout(service: AuthServiceDep, response: Response):
 async def refresh(
     service: AuthServiceDep,
     response: Response,
-    refresh_token: str = Security(APIKeyCookie(name="refresh_token", auto_error=True)),
+    refresh_token: str = Security(refresh_token_schema),
 ):
     return await service.refresh(response, refresh_token)
