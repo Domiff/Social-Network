@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from src.auth.router import router as auth_router
 from src.core.config import settings
 from src.core.database import ping_database
 from src.core.logging import configure_logging, get_logger
@@ -39,6 +40,7 @@ def create_app() -> FastAPI:
 
     setup_middlewares(app)
     setup_healthcheck(app)
+    app.include_router(auth_router)
 
     logger.info("Application routes configured")
 
