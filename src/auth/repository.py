@@ -1,9 +1,9 @@
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError
 
-from src.auth.exceptions import AlreadyExists, DoesNotExists
 from src.auth.models import User
 from src.core.database import BaseRepository
+from src.core.exceptions import AlreadyExists, DoesNotExists
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
