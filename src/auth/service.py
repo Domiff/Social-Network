@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.auth.jwt import JWT
 from src.auth.repository import UserRepository
 from src.auth.schemas import CredentialsSchema, TokenOut
+from src.auth.utils import get_password_hash
 from src.core.config import settings
 from src.core.database import SessionDep
 from src.core.logging import get_logger
@@ -37,12 +38,21 @@ class AuthService:
         self._set_refresh_cookie(tokens.refresh_token, response)
         return TokenOut(access_token=tokens.access_token)
 
-    async def register(self, data: CredentialsSchema, response: Response) -> TokenOut:
-        user = await self.repo.create(data.to_dict())
+    async def register(
+        self, credentials: CredentialsSchema, response: Response
+    ) -> TokenOut:
+        data = {
+            "username": credentials.username,
+            "email": credentials.email,
+            "password": get_password_hash(credentials.password),
+        }
+        user = await self.repo.create(data)
         return self._authenticate(user.id, response)
 
-    async def login(self, data: CredentialsSchema, response: Response) -> TokenOut:
-        user = await self.repo.get_by_email(data.email)
+    async def login(
+        self, credentials: CredentialsSchema, response: Response
+    ) -> TokenOut:
+        user = await self.repo.get_by_email(credentials.email)
         return self._authenticate(user.id, response)
 
     async def logout(self, response: Response) -> None:
