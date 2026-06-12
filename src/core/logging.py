@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 import time
+from logging import Logger
 from logging.handlers import RotatingFileHandler
 from typing import Any
 
@@ -97,5 +98,5 @@ def configure_logging() -> None:
         logging.getLogger(logger_name).setLevel(logging.WARNING)
 
 
-def get_logger(name: str):
+def get_logger(name: str) -> Logger:
     return structlog.get_logger(name)
