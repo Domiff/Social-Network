@@ -44,10 +44,19 @@ class CORSSettings(AppSettings):
     ALLOW_METHODS: list[str]
 
 
+class AuthSettings(BaseSettings):
+    PRIVATE_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-private.pem"
+    PUBLIC_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-public.pem"
+    ALGORITHM: str = "RS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
+
+
 class Settings(AppSettings):
     app: AppSettings = AppSettings()
     db: DBSettings = DBSettings()
     cors: CORSSettings = CORSSettings()
+    auth: AuthSettings = AuthSettings()
 
 
 settings = Settings()
