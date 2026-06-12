@@ -41,6 +41,15 @@ class UserRepository(BaseRepository):
             logger.error("User does not exist")
             raise DoesNotExists() from e
 
+    async def get_by_id(self, id_: int) -> User:
+        try:
+            query = select(User).where(User.id == id_, User.is_active)
+            result = await self.session.execute(query)
+            return result.scalar_one()
+        except IntegrityError as e:
+            logger.error("User does not exist")
+            raise DoesNotExists() from e
+
     async def delete(self, email: str, is_soft: bool) -> bool:
         try:
             if is_soft:
