@@ -1,5 +1,5 @@
 from sqlalchemy import delete, insert, select, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.models import User
@@ -24,20 +24,19 @@ class UserRepository(BaseRepository):
             raise AlreadyExists() from e
 
     async def list(self) -> list[User]:
-        try:
-            query = select(User)
-            result = await self.session.execute(query)
-            return result.scalars().all()
-        except IntegrityError as e:
-            logger.error("User does not exist")
-            raise DoesNotExists() from e
+        query = select(User)
+        result = await self.session.execute(query)
+        users = result.scalars().all()
+        if not users:
+            raise DoesNotExists()
+        return users
 
     async def get_by_email(self, email: str) -> User:
         try:
             query = select(User).where(User.email == email, User.is_active)
             result = await self.session.execute(query)
             return result.scalar_one()
-        except IntegrityError as e:
+        except NoResultFound as e:
             logger.error("User does not exist")
             raise DoesNotExists() from e
 
@@ -46,7 +45,7 @@ class UserRepository(BaseRepository):
             query = select(User).where(User.id == id_, User.is_active)
             result = await self.session.execute(query)
             return result.scalar_one()
-        except IntegrityError as e:
+        except NoResultFound as e:
             logger.error("User does not exist")
             raise DoesNotExists() from e
 
@@ -60,7 +59,7 @@ class UserRepository(BaseRepository):
             await self.session.commit()
             logger.info("User deleted")
             return True
-        except IntegrityError as e:
+        except NoResultFound as e:
             logger.error("User does not exist")
             raise DoesNotExists() from e
 
@@ -71,7 +70,7 @@ class UserRepository(BaseRepository):
             await self.session.commit()
             logger.info("User updated")
             return True
-        except IntegrityError as e:
+        except NoResultFound as e:
             logger.error("User does not exist")
             raise DoesNotExists() from e
 
