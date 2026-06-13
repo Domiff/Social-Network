@@ -11,7 +11,7 @@ import structlog
 
 from src.core.config import BASE_DIR, settings
 
-LOG_LEVEL = "INFO" if settings.app.IS_DEBUG else "INFO"
+LOG_LEVEL = "DEBUG" if settings.app.IS_DEBUG else "INFO"
 
 
 class JsonFormatter(logging.Formatter):
