@@ -20,3 +20,8 @@ class AlreadyExists(AppException):
 class DoesNotExists(AppException):
     DETAIL = "Does not Exists"
     STATUS_CODE = 404
+
+
+class HttpError(AppException):
+    DETAIL = "HTTP Error"
+    STATUS_CODE = 503

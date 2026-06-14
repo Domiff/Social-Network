@@ -52,11 +52,23 @@ class AuthSettings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
 
+class HTTPSettings(AppSettings):
+    TIMEOUT: float = 30.0
+    CONNECT: float = 5.0
+    MAX_CONNECTIONS: int = 100
+    MAX_KEEPALIVE_CONNECTIONS: int = 20
+    KEEPALIVE_EXPIRY: float = 30.0
+
+    def model_post_init(self, __context) -> None:
+        object.__setattr__(self, "VERIFY_SSL", False if self.IS_DEBUG else True)
+
+
 class Settings(AppSettings):
     app: AppSettings = AppSettings()
     db: DBSettings = DBSettings()
     cors: CORSSettings = CORSSettings()
     auth: AuthSettings = AuthSettings()
+    http: HTTPSettings = HTTPSettings()
 
 
 settings = Settings()

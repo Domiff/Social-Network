@@ -7,6 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 from src.auth.router import router as auth_router
 from src.core.config import settings
 from src.core.database import ping_database
+from src.core.http import http_client_manager
 from src.core.logging import configure_logging, get_logger
 
 logger = get_logger(__name__)
@@ -21,7 +22,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     logger.info("Starting application", **params)
     logger.info("Application started")
 
+    await http_client_manager.startup()
+
     yield
+
+    await http_client_manager.shutdown()
 
     logger.info("Starting graceful shutdown")
     logger.info("Graceful shutdown completed")
