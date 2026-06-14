@@ -44,7 +44,7 @@ class CORSSettings(AppSettings):
     ALLOW_METHODS: list[str]
 
 
-class AuthSettings(BaseSettings):
+class AuthSettings(AppSettings):
     PRIVATE_KEY_PATH: Path = BASE_DIR / "keys" / "jwt-private.pem"
     PUBLIC_KEY_PATH: Path = BASE_DIR / "keys" / "jwt-public.pem"
     ALGORITHM: str = "RS256"
