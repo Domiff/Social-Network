@@ -27,7 +27,7 @@ class HttpClientManager:
         return httpx.AsyncClient(
             timeout=self.default_timeout,
             limits=self.client_limits,
-            verify=settings.http.VERIFY,
+            verify=settings.http.VERIFY_SSL,
         )
 
     async def startup(self) -> None:
