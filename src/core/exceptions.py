@@ -25,3 +25,8 @@ class DoesNotExists(AppException):
 class HttpError(AppException):
     DETAIL = "HTTP Error"
     STATUS_CODE = 503
+
+
+class S3Error(AppException):
+    DETAIL = "S3 Error"
+    STATUS_CODE = 503

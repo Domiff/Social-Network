@@ -63,12 +63,21 @@ class HTTPSettings(AppSettings):
         object.__setattr__(self, "VERIFY_SSL", False if self.IS_DEBUG else True)
 
 
+class S3Settings(AppSettings):
+    S3_ENDPOINT_URL: str
+    S3_ACCESS_KEY: str
+    S3_SECRET_KEY: str
+    S3_REGION: str
+    S3_BUCKET: str
+
+
 class Settings(AppSettings):
     app: AppSettings = AppSettings()
     db: DBSettings = DBSettings()
     cors: CORSSettings = CORSSettings()
     auth: AuthSettings = AuthSettings()
     http: HTTPSettings = HTTPSettings()
+    s3: S3Settings = S3Settings()
 
 
 settings = Settings()
