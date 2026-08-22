@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, Response
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.exceptions import Forbidden
@@ -10,6 +11,7 @@ from src.auth.schemas import CredentialsSchema, TokenOut
 from src.auth.utils import get_password_hash, verify_password
 from src.core.config import settings
 from src.core.database import SessionDep
+from src.core.exceptions import AlreadyExists, DoesNotExists
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -47,24 +49,38 @@ class AuthService:
             "email": credentials.email,
             "password": get_password_hash(credentials.password),
         }
-        user = await self.repo.create(data)
+        try:
+            user = await self.repo.create(data)
+        except IntegrityError as e:
+            await self.session.rollback()
+            logger.error("User already exists", email=credentials.email)
+            raise AlreadyExists() from e
+        logger.info("User created successfully", user_id=user.id)
         return self._authenticate(user.id, response)
 
     async def login(
         self, credentials: CredentialsSchema, response: Response
     ) -> TokenOut:
-        user = await self.repo.get_by_email(credentials.email)
+        try:
+            user = await self.repo.get_by_email(credentials.email)
+        except NoResultFound as e:
+            logger.error("User does not exist", email=credentials.email)
+            raise DoesNotExists() from e
         if not verify_password(credentials.password, user.password):
+            logger.error("Password mismatch", user_id=user.id)
             raise Forbidden("Password mismatch")
+        logger.info("User logged in", user_id=user.id)
         return self._authenticate(user.id, response)
 
     async def logout(self, response: Response) -> None:
         self._remove_refresh_cookie(response)
+        logger.info("User logged out")
 
     async def refresh(self, response: Response, refresh_token: str) -> TokenOut:
         self._remove_refresh_cookie(response)
         tokens = self.jwt.refresh_jwt(refresh_token)
         self._set_refresh_cookie(tokens.refresh_token, response)
+        logger.info("Tokens refreshed")
         return TokenOut(access_token=tokens.access_token)
 
 

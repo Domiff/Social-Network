@@ -1,7 +1,7 @@
 import pytest
+from sqlalchemy.exc import NoResultFound
 
 from src.auth.models import User
-from src.core.exceptions import DoesNotExists
 from tests.factories import make_credentials
 
 
@@ -67,6 +67,6 @@ async def test_delete(user_repo, is_soft):
 
     await user_repo.delete(user.email, is_soft)
 
-    with pytest.raises(DoesNotExists):
+    with pytest.raises(NoResultFound):
         await user_repo.get_by_email(user.email)
         await user_repo.get_by_id(user.id)
