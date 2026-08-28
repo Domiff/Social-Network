@@ -1,6 +1,5 @@
 import io
 import uuid
-from contextlib import asynccontextmanager
 
 import aioboto3
 
