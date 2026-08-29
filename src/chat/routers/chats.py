@@ -5,7 +5,7 @@ from fastcrud.types import GetMultiResponseModel
 from sqlalchemy.exc import NoResultFound
 
 from src.auth.depends import get_current_user
-from src.chat.repository import (
+from src.chat.repositories import (
     ChatRepository,
     MessageRepository,
     get_chat_repository,
