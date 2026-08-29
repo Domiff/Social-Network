@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.18.4",
     "asyncpg>=0.31.0",
     "fastapi[standard]>=0.136.3",
+    "fastcrud>=0.22.3",
     "pwdlib[argon2]>=0.3.0",
     "pydantic-settings>=2.14.1",
     "pyjwt[crypto]>=2.13.0",
@@ -61,3 +62,6 @@ testpaths = ["tests"]
 addopts = [
     "-v",
 ]
+
+[tool.fastapi]
+entrypoint = "src.main:app"
