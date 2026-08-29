@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
@@ -12,3 +13,8 @@ class BaseSchema(BaseModel):
 
     def to_dict(self, *args, **kwargs) -> dict[str, Any]:
         return self.model_dump(*args, **kwargs)
+
+
+class DateTimeSchema(BaseModel):
+    created_at: datetime
+    updated_at: datetime
