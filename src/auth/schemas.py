@@ -18,7 +18,7 @@ class UserSchema(BaseSchema):
     first_name: str
     last_name: str
     is_active: bool
-    date_joined: datetime
+    created_at: datetime
 
 
 class PairTokens(BaseSchema):

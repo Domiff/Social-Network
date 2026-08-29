@@ -1,15 +1,36 @@
 from collections.abc import AsyncGenerator
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy import func, text
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from src.core.config import settings
 from src.core.logging import get_logger
 
 logger = get_logger(__name__)
+
+
+class Base(DeclarativeBase):
+    __abstract__ = True
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
+
+
+class BaseRepository:
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
 
 url = settings.db.DB_URL
 engine = create_async_engine(url)
@@ -29,17 +50,6 @@ async def ping_database() -> bool:
     except Exception as e:
         logger.error("Database ping failed", error=str(e))
         return False
-
-
-class Base(DeclarativeBase):
-    __abstract__ = True
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-
-
-class BaseRepository:
-    def __init__(self, session: AsyncSession):
-        self.session = session
 
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
