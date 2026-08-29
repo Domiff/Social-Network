@@ -2,7 +2,8 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from src.auth.router import router as auth_router
 from src.core.config import settings
@@ -42,9 +43,11 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
         openapi_url="/openapi.json" if settings.app.IS_DEBUG else None,
     )
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
     setup_middlewares(app)
     setup_healthcheck(app)
+
     app.include_router(auth_router)
 
     logger.info("Application routes configured")
