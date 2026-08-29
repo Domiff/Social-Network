@@ -10,6 +10,7 @@ from alembic import context
 from src.core.config import settings
 from src.core.database import Base
 from src.auth.models import User
+from src.chat.models import Chat, Message
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
