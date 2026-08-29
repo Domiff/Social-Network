@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from src.auth.router import router as auth_router
+from src.chat.routers import router as chat_router
 from src.core.config import settings
 from src.core.database import ping_database
 from src.core.http import http_client_manager
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
     setup_healthcheck(app)
 
     app.include_router(auth_router)
+    app.include_router(chat_router)
 
     logger.info("Application routes configured")
 
