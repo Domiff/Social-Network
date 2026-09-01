@@ -71,6 +71,10 @@ class S3Settings(AppSettings):
     S3_BUCKET: str
 
 
+class AdminSettings(AppSettings):
+    ADMIN_SECRET_KEY: str
+
+
 class Settings(AppSettings):
     app: AppSettings = AppSettings()
     db: DBSettings = DBSettings()
@@ -78,6 +82,7 @@ class Settings(AppSettings):
     auth: AuthSettings = AuthSettings()
     http: HTTPSettings = HTTPSettings()
     s3: S3Settings = S3Settings()
+    admin: AdminSettings = AdminSettings()
 
 
 settings = Settings()
