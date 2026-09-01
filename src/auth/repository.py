@@ -22,6 +22,11 @@ class UserRepository(BaseRepository):
         result = await self.session.execute(query)
         return result.scalar_one()
 
+    async def get_by_username(self, username: str) -> User:
+        query = select(User).where(User.username == username, User.is_active)
+        result = await self.session.execute(query)
+        return result.scalar_one()
+
     async def get_by_id(self, id_: int) -> User:
         query = select(User).where(User.id == id_, User.is_active)
         result = await self.session.execute(query)
