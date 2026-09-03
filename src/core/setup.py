@@ -5,6 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from src.auth.admin import UserAdmin
+from src.admin.setup import setup_admin
 from src.auth.router import router as auth_router
 from src.chat.routers import router as chat_router
 from src.core.config import settings
@@ -53,6 +55,11 @@ def create_app() -> FastAPI:
     app.include_router(chat_router)
 
     logger.info("Application routes configured")
+
+    admin = setup_admin(app)
+    admin.add_view(UserAdmin)
+
+    logger.info("Admin configured")
 
     return app
 
