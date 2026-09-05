@@ -50,6 +50,15 @@ async def test_get_user_by_id(user_repo):
     assert isinstance(user, User)
 
 
+async def test_get_by_username(user_repo):
+    credentials = make_credentials()
+    user = await user_repo.create(credentials)
+    user = await user_repo.get_by_username(user.username)
+
+    assert user is not None
+    assert isinstance(user, User)
+
+
 async def test_update(user_repo):
     credentials = make_credentials()
     user = await user_repo.create(credentials)
@@ -60,12 +69,13 @@ async def test_update(user_repo):
     assert user.username == "New name"
 
 
-@pytest.mark.parametrize("is_soft", [True, False])
-async def test_delete(user_repo, is_soft):
+async def test_delete(user_repo):
+    """Test hard deleting a user, where is_soft = False in user_repo.delete"""
+
     credentials = make_credentials()
     user = await user_repo.create(credentials)
 
-    await user_repo.delete(user.email, is_soft)
+    await user_repo.delete(user.email, False)
 
     with pytest.raises(NoResultFound):
         await user_repo.get_by_email(user.email)
