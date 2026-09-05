@@ -1,0 +1,13 @@
+{% extends "sqladmin_original/layout.html" %}
+
+{% block head_css %}
+{{ super() }}
+<style>
+  .navbar-vertical .dropdown-menu .nav-link {
+    padding-left: 2.75rem !important;
+  }
+  .navbar-vertical .container-fluid > .btn-secondary {
+    margin-top: auto !important;
+  }
+</style>
+{% endblock %}
